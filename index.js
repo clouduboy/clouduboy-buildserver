@@ -10,13 +10,13 @@ const uniqueId = require('uuid/v1')
 
 
 // Load configuratopn
+const CFG = require('./config.js')()
 const QUEUE_LENGTH_HEADER = 'x-queue-length'
 
-const DIR_JOBS_PENDING = path.join(__dirname, 'data/jobs/pending')
-const DIR_JOBS_READY   = path.join(__dirname, 'data/jobs/ready')
+const DIR_JOBS_PENDING = path.join(CFG.rootdir, '/data/jobs/pending')
+const DIR_JOBS_READY   = path.join(CFG.rootdir, '/data/jobs/ready')
 
-//const HOST_URL_READY = 'https://compiler.clouduboy.org/r'
-const HOST_URL_READY = 'http://localhost:3300/r'
+const HOST_URL_READY = CFG.host_url+CFG.host_path_ready
 
 
 // Init server
@@ -24,7 +24,8 @@ const server = express()
 server.use('/r', express.static(DIR_JOBS_READY, { fallthrough: false }))
 
 // Serve on port XXXX
-server.listen(3300)
+server.listen(CFG.port)
+console.log(`Clouduboy Build Server starting on :${CFG.port}`)
 
 
 // FIFO list of pending jobs

@@ -1,0 +1,5 @@
+{
+  "port": 3300,
+  "host_url": "http://localhost:3300",
+  "host_path_ready": "/r"
+}
