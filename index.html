@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="background:#111;color:white;margin:0">
+<textarea spellcheck="false" style="background: transparent; border: none; color: lime; min-width: 98vw; min-height: 90vh;font-size: .7em;">
+"use strict";
+
+let game = new MicroCanvas();
+
+let gfxBats;
+
+game.setup(function(game) {
+  gfxBats = game.loadSprite(`! bats 16x6x2
+##....#..#....##
+.##...####...##.
+.###.#.##.#.###.
+.##############.
+...##########...
+....##.##.##....
+
+...#..#..#..#...
+.#.##.####.##.#.
+######.##.######
+###.########.###
+#.....####.....#
+.......##.......
+`);
+});
+
+
+
+let x = 0, y = game.height/2;
+let sx = 1, sy = 1;
+
+let animationSpeed = 8;
+let cSprite = 0;
+
+game.loop(function() {
+  // Update flapping animation
+  if (game.everyXFrames(animationSpeed)) {
+    cSprite = 1 - cSprite;
+  }
+
+  // Update position
+  x += sx;
+  y += sy;
+
+  if (x>game.width-gfxBats.width || x < 1) sx = -sx;
+  if (y>game.height-gfxBats.height || y < 1) sy = -sy;
+
+
+  // Clear display, redraw background text
+  game.clear();
+
+  game.drawText("Sprite\nDemo", 0,0, 3);
+
+  // Draw shadow (unset pixels on screen based on the bitmap)
+  game.eraseImage(gfxBats[cSprite|0], 0 +x,2 +y);
+  game.eraseImage(gfxBats[cSprite|0], 2 +x,2 +y);
+
+  // Draw Bat
+  game.drawImage(gfxBats[cSprite|0], 1 +x,1 +y);
+});
+
+console.log("MicroCanvas demo");
+</textarea>
+<button>Convert</button>
+
+<script>
+  const QUEUE_LENGTH_HEADER = 'x-queue-length'
+
+  document.querySelector('button').addEventListener('click', function() {
+    document.querySelector('button').disabled = true
+    return fetch(
+      '/v1/convert',
+      {
+        method: 'POST',
+        body: JSON.stringify({ file: document.querySelector('textarea').value }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(r => Promise.all([ Promise.resolve(r), r.json() ]) )
+    .then(([r, result]) => {
+      const q = r.headers.get(QUEUE_LENGTH_HEADER)
+      const jobid = result.job
+
+      console.log('Queue: ', q +' jobs queued before ' + jobid)
+      // Leave some time for the server to process the job,
+      // if there isn't too much of a contention, this might
+      // return with the result right away
+      return after(300).then(_ => pollForResult(jobid))
+    })
+    .then(jobResult => {
+      console.log('Job result: ', jobResult)
+      return fetch(jobResult['device_code']).then(r => r.text())
+    })
+    .then(deviceCode => {
+      document.querySelector('textarea').value = deviceCode
+    })
+    .catch(e => {
+      console.log(e)
+    })
+  })
+
+  function pollForResult(jobid) {
+    return fetch('/v1/job/'+jobid)
+    .then(r => {
+      if (r.status === 404) throw 'Job does not exist: '+jobid
+
+      const q = r.headers.get(QUEUE_LENGTH_HEADER)
+      if (q > 0) {
+        // TODO: align poll interval based on queue length
+        return after(700+1000*Math.random()|0).then(pollForResult.bind(null, jobid))
+      }
+
+      return r.json()
+    })
+  }
+
+  function resultAvailable(jobid, result) {}
+
+  function after(millisecs) {
+    return new Promise(resolve => setTimeout(resolve, millisecs))
+  }
+</script>
+</body>
+</html>

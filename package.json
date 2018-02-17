@@ -1,0 +1,29 @@
+{
+  "name": "clouduboy-build-server",
+  "version": "0.1.0",
+  "description": "The Clouduboy build server provides an API for turning MicroCanvas JS files to C code & firmware binaries",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "git pull && npm install && pm2 start index.js --name clouduboy_buildserver",
+    "update": "pm2 stop clouduboy_buildserver && git pull && npm install && pm2 start clouduboy_buildserver"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clouduboy/clouduboy-buildserver.git"
+  },
+  "keywords": [
+    "clouduboy"
+  ],
+  "author": "István Szmozsánszky 'Flaki' <clouduboy@flaki.hu> (https://clouduboy.org)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/clouduboy/clouduboy-buildserver/issues"
+  },
+  "homepage": "https://github.com/clouduboy/clouduboy-buildserver#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "fs-extra": "^5.0.0",
+    "uuid": "^3.2.1"
+  }
+}
