@@ -23,6 +23,14 @@ module.exports = function() {
     return config
   }
 
+  // Additional global constants
+  config.QUEUE_LENGTH_HEADER = 'x-queue-length'
+
+  config.DIR_JOBS_PENDING = path.join(config.rootdir, '/data/jobs/pending')
+  config.DIR_JOBS_READY   = path.join(config.rootdir, '/data/jobs/ready')
+
+  config.HOST_URL_READY = config.host_url+config.host_path_ready
+
 
   return config
 }
