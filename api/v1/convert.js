@@ -11,7 +11,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 
-const { rootdir, DIR_JOBS_READY, DIR_JOBS_PENDING, HOST_URL_READY, QUEUE_LENGTH_HEADER } = global.CONFIGURATION
+const { rootdir, DIR_JOBS_READY, DIR_JOBS_PENDING, QUEUE_LENGTH_HEADER } = global.CONFIGURATION
 
 const jobs = require(rootdir+'/lib/jobs')
 
@@ -28,7 +28,7 @@ function convertRequest(req, res) {
 
   const jobid = jobs.create()
 
-  const filepath = path.join(DIR_JOBS_PENDING, jobid, 'game.js')
+  const filepath = path.join(DIR_JOBS_PENDING, jobid, 'src/game.js')
   const metapath = path.join(DIR_JOBS_PENDING, jobid, 'job.json')
   const job = {}
 
