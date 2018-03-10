@@ -32,6 +32,7 @@ module.exports = function() {
   config.HOST_URL_READY = config.host_url+config.host_path_ready
 
   config.CDB_COMPILER_DIR = path.join(config.rootdir, '../clouduboy-compiler')
+  config.CDB_PLATFORMS_DIR = path.join(config.rootdir, '../clouduboy-platforms')
 
   return config
 }

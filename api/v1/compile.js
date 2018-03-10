@@ -14,6 +14,13 @@
 // ../clouduboy-platforms/lib/Arduboy-1.1.1$  ./test.sh _compile.ino &> ~/data/clouduboy-compiler/data/build.log
 // (also outputs .pioenvs/leonardo/firmware.hex)
 
+const fs = require('fs-extra')
+const path = require('path')
+
+const { rootdir, DIR_JOBS_READY, DIR_JOBS_PENDING, QUEUE_LENGTH_HEADER } = global.CONFIGURATION
+
+const jobs = require(rootdir+'/lib/jobs')
+
 
 module.exports = function init(app) {
   app.use('/v1/compile', require('express').json(), compileRequest)
@@ -22,8 +29,26 @@ module.exports = function init(app) {
 
 
 function compileRequest(req, res) {
-  // TODO: implement
-  console.log('Compilation not implemented yet')
+  // No source file to convert specified
+  if (!req.body.file) return res.status(500).send('"ERROR: Missing file parameter!"')
 
-  res.status(501).send('"ERROR: Compile support coming soon."')
+  const jobid = jobs.create()
+
+  const filepath = path.join(DIR_JOBS_PENDING, jobid, 'src/game.js')
+  const metapath = path.join(DIR_JOBS_PENDING, jobid, 'job.json')
+  const job = {}
+
+  job.type = 'compile'
+  job.target = 'arduboy' //TODO: target selection
+  job.id = jobid
+  job.started = Date.now()
+
+  fs.outputFile(filepath, req.body.file).then(
+    _ => fs.outputJson(metapath, job)
+  )
+
+  res.setHeader(QUEUE_LENGTH_HEADER, job.queue||0)
+  res.json({ job: jobid })
+
+  console.log('Compiling ', filepath+'…')
 }
