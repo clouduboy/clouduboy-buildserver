@@ -39,7 +39,7 @@ function compileRequest(req, res) {
   const job = {}
 
   job.type = 'compile'
-  job.target = 'arduboy' //TODO: target selection
+  job.target = req.query.target || 'arduboy' //TODO: target selection
   job.id = jobid
   job.started = Date.now()
 
