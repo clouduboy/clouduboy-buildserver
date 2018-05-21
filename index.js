@@ -24,7 +24,12 @@ const { rootdir, DIR_JOBS_READY, DIR_JOBS_PENDING, HOST_URL_READY } = CFG
 // Init server
 const server = express()
 
+// Expose results/artifacts from completed compilations
 server.use('/r', express.static(DIR_JOBS_READY, { fallthrough: false }))
+
+// Serve static files and assets
+server.use(express.static(rootdir+'/modules/www'))
+
 
 // Serve on port XXXX
 server.listen(CFG.port)

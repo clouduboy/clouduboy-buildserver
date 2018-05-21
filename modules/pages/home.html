@@ -2,81 +2,32 @@
 <html>
 <head><meta charset="utf-8"></head>
 <body style="background:#111;color:white;margin:0">
-<textarea spellcheck="false" style="background: transparent; border: none; color: lime; min-width: 98vw; min-height: 90vh;font-size: .7em;">
-"use strict";
-
-let game = new MicroCanvas();
-
-let gfxBats;
-
-game.setup(function(game) {
-  gfxBats = game.loadSprite(`! bats 16x6x2
-##....#..#....##
-.##...####...##.
-.###.#.##.#.###.
-.##############.
-...##########...
-....##.##.##....
-
-...#..#..#..#...
-.#.##.####.##.#.
-######.##.######
-###.########.###
-#.....####.....#
-.......##.......
-`);
-});
-
-
-
-let x = 0, y = game.height/2;
-let sx = 1, sy = 1;
-
-let animationSpeed = 8;
-let cSprite = 0;
-
-game.loop(function() {
-  // Update flapping animation
-  if (game.everyXFrames(animationSpeed)) {
-    cSprite = 1 - cSprite;
-  }
-
-  // Update position
-  x += sx;
-  y += sy;
-
-  if (x>game.width-gfxBats.width || x < 1) sx = -sx;
-  if (y>game.height-gfxBats.height || y < 1) sy = -sy;
-
-
-  // Clear display, redraw background text
-  game.clear();
-
-  game.drawText("Sprite\nDemo", 0,0, 3);
-
-  // Draw shadow (unset pixels on screen based on the bitmap)
-  game.eraseImage(gfxBats[cSprite|0], 0 +x,2 +y);
-  game.eraseImage(gfxBats[cSprite|0], 2 +x,2 +y);
-
-  // Draw Bat
-  game.drawImage(gfxBats[cSprite|0], 1 +x,1 +y);
-});
-
-console.log("MicroCanvas demo");
-</textarea>
-<button id="convert">Arduino code (for Arduboy)</button>
-<button id="compile">Device binary (for Arduboy)</button>
+<textarea spellcheck="false" style="background: transparent; border: none; color: lime; min-width: 98vw; min-height: 80vh;font-size: .7em;"></textarea>
+<button id="convert" data-action="convert" data-target="arduboy">Arduino code (for Arduboy)</button>
+<button id="compile" data-action="compile" data-target="arduboy">Device binary (for Arduboy)</button>
+<br>
+<button id="convert" data-action="convert" data-target="tiny_arcade">Arduino code (for Tiny Arcade)</button>
+<button id="compile" data-action="compile" data-target="tiny_arcade">Device binary (for Tiny Arcade)</button>
 
 <script>
   const QUEUE_LENGTH_HEADER = 'x-queue-length'
 
-  document.querySelector('button[id="convert"]').addEventListener('click', apiButtonHandler)
-  document.querySelector('button[id="compile"]').addEventListener('click', apiButtonHandler)
+  Array.from(document.querySelectorAll('button[data-action]')).forEach(
+    btn => btn.addEventListener('click', apiButtonHandler)
+  )
+
+  // load demo
+  if (document.querySelector('textarea').value == '') {
+    fetch('/examples/demo.js').then(r => r.text()).then(r => document.querySelector('textarea').value = r)
+  }
 
   function apiButtonHandler(event) {
     Array.from(document.querySelectorAll('button')).forEach(b => b.disabled = true)
+
+    const td = event.target.dataset
+
     return fetch(
-      '/api/v1/'+event.target.id,
+      '/api/v1/'+td.action+'?target='+td.target,
       {
         method: 'POST',
         body: JSON.stringify({ file: document.querySelector('textarea').value }),
