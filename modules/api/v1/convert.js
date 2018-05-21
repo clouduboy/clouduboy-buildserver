@@ -11,9 +11,14 @@
 const fs = require('fs-extra')
 const path = require('path')
 
-const { rootdir, DIR_JOBS_READY, DIR_JOBS_PENDING, QUEUE_LENGTH_HEADER } = global.CONFIGURATION
+const {
+  rootdir,
+  DIR_JOBS_READY,
+  DIR_JOBS_PENDING,
+  QUEUE_LENGTH_HEADER,
+} = require(__filename.replace(/\bmodules\b.*/,'config.js'))()
 
-const jobs = require(rootdir+'/lib/jobs')
+const jobs = require(rootdir+'/modules/lib/jobs')
 
 
 module.exports = function init(app) {

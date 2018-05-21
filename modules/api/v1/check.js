@@ -1,3 +1,7 @@
+// Configuration
+const {
+  rootdir,
+} = require(__filename.replace(/\bmodules\b.*/,'config.js'))()
 
 
 module.exports = function(app) {

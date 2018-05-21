@@ -16,14 +16,18 @@ Returns:
 
 */
 
-const { rootdir, QUEUE_LENGTH_HEADER } = global.CONFIGURATION
+const {
+  rootdir,
+  QUEUE_LENGTH_HEADER,
+} = require(__filename.replace(/\bmodules\b.*/,'config.js'))()
 
-const jobs = require(rootdir+'/lib/jobs')
+const jobs = require(rootdir+'/modules/lib/jobs')
 
 
 
 module.exports = function(app) {
   app.use('/api/v1/job/:jobid', jobRequest)
+  app.use('/api/v1/jobs', jobListing)
 }
 
 
@@ -50,4 +54,15 @@ function jobRequest(req, res) {
     res.status(404).send()
 
   }
+}
+
+
+function jobListing(req, res) {
+  let queue = jobs.dumpQueue()
+  let listing = {
+    jobs: queue
+  }
+
+  console.log(queue)
+  res.json(listing)
 }

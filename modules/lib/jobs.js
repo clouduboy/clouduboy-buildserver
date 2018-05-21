@@ -89,6 +89,7 @@ const Job = Object.assign(new Function,
 
 module.exports = {
   processQueue,
+  dumpQueue,
   status,
   create
 }
@@ -112,6 +113,10 @@ function status(jobid) {
 
 function processQueue() {
   processJob().catch(e => console.log(e)).then(setTimeout(processQueue, 100))
+}
+
+function dumpQueue() {
+  return jobs.map(job => status(job))
 }
 
 function processJob() {
