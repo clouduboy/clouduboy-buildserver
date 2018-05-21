@@ -12,14 +12,14 @@ binary firmware), for the supported platforms.
 - Gamebuino Meta `planned`
 
 ## API
-- `/v1/check`  
+- `/api/v1/check`  
   Expects MicroCanvas (JS) source as POST data in `file` parameter. Checks the file for compile errors and returns the result, no polling is required for job completion.
-- `/v1/convert`  
+- `/api/v1/convert`  
   Expects MicroCanvas (JS) source as POST data in `file` parameter. Returns the `clouduboy-compiler` result.
-- `/v1/compile`  
+- `/api/v1/compile`  
   Does the JS->C conversion, as well as the target binary compilation, generating `clouduboy-compiler` results,
   as well as the output binary HEX/firmware image (if both the conversion & compilation were successful).
-- `/v1/job/:jobid`  
+- `/api/v1/job/:jobid`  
   Both `convert` and `compile` return a "job ID". Jobs sent to convert/compile are queued up and executed in a FIFO manner. A job ID refers to these processes and clients should poll for their job completion. After a job has completed its results (JS, HEX file, etc.) are available as a static download - this endpoint returns the metadata and URLs required to see these results.
 
 

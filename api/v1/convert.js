@@ -17,7 +17,7 @@ const jobs = require(rootdir+'/lib/jobs')
 
 
 module.exports = function init(app) {
-  app.use('/v1/convert', require('express').json(), convertRequest)
+  app.use('/api/v1/convert', require('express').json(), convertRequest)
 }
 
 

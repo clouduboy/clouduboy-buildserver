@@ -76,7 +76,7 @@ console.log("MicroCanvas demo");
   function apiButtonHandler(event) {
     Array.from(document.querySelectorAll('button')).forEach(b => b.disabled = true)
     return fetch(
-      '/v1/'+event.target.id,
+      '/api/v1/'+event.target.id,
       {
         method: 'POST',
         body: JSON.stringify({ file: document.querySelector('textarea').value }),
@@ -115,7 +115,7 @@ console.log("MicroCanvas demo");
   }
 
   function pollForResult(jobid) {
-    return fetch('/v1/job/'+jobid)
+    return fetch('/api/v1/job/'+jobid)
     .then(r => {
       if (r.status === 404) throw 'Job does not exist: '+jobid
 

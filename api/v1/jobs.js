@@ -23,7 +23,7 @@ const jobs = require(rootdir+'/lib/jobs')
 
 
 module.exports = function(app) {
-  app.use('/v1/job/:jobid', jobRequest)
+  app.use('/api/v1/job/:jobid', jobRequest)
 }
 
 

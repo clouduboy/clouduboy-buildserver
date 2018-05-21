@@ -1,7 +1,7 @@
 
 
 module.exports = function(app) {
-  app.use('/v1/check', require('express').json(), checkRequest)
+  app.use('/api/v1/check', require('express').json(), checkRequest)
 }
 
 

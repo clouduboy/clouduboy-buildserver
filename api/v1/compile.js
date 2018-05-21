@@ -23,7 +23,7 @@ const jobs = require(rootdir+'/lib/jobs')
 
 
 module.exports = function init(app) {
-  app.use('/v1/compile', require('express').json(), compileRequest)
+  app.use('/api/v1/compile', require('express').json(), compileRequest)
 }
 
 
