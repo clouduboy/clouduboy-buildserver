@@ -14,6 +14,8 @@ const path = require('path')
 const cors = require('cors')
 const json = require('express').json
 
+const corsConfig = { allowedHeaders: 'QUEUE_LENGTH_HEADER' }
+
 const {
   rootdir,
   DIR_JOBS_READY,
@@ -28,7 +30,7 @@ module.exports = function init(app) {
   // enable cross-origin requests
   app.options('/api/v1/convert', cors())
 
-  app.use('/api/v1/convert', cors(), json(), convertRequest)
+  app.use('/api/v1/convert', cors(corsConfig), json(), convertRequest)
 }
 
 
