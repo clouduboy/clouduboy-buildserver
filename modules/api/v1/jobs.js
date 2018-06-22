@@ -16,6 +16,8 @@ Returns:
 
 */
 
+const cors = require('cors')
+
 const {
   rootdir,
   QUEUE_LENGTH_HEADER,
@@ -26,8 +28,8 @@ const jobs = require(rootdir+'/modules/lib/jobs')
 
 
 module.exports = function(app) {
-  app.use('/api/v1/job/:jobid', jobRequest)
-  app.use('/api/v1/jobs', jobListing)
+  app.use('/api/v1/job/:jobid', cors(), jobRequest)
+  app.use('/api/v1/jobs', cors(), jobListing)
 }
 
 

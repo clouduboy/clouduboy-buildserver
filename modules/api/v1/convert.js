@@ -11,6 +11,9 @@
 const fs = require('fs-extra')
 const path = require('path')
 
+const cors = require('cors')
+const json = require('express').json()
+
 const {
   rootdir,
   DIR_JOBS_READY,
@@ -22,7 +25,10 @@ const jobs = require(rootdir+'/modules/lib/jobs')
 
 
 module.exports = function init(app) {
-  app.use('/api/v1/convert', require('express').json(), convertRequest)
+  // enable cross-origin requests
+  app.options('/api/v1/convert', cors())
+
+  app.use('/api/v1/convert', cors(), json(), convertRequest)
 }
 
 
