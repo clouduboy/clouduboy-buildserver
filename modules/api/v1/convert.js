@@ -12,7 +12,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const cors = require('cors')
-const json = require('express').json()
+const json = require('express').json
 
 const {
   rootdir,
