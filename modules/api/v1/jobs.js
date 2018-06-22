@@ -50,7 +50,7 @@ function jobRequest(req, res) {
 
   // Job is still in the queue (waiting for) being processed
   } else if (job.status === 'queued') {
-    res.status(204).send()
+    res.status(204).json({ queue: job.queue||0 })
 
   // Job does not exist
   } else {

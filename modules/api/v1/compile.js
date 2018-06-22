@@ -61,7 +61,7 @@ function compileRequest(req, res) {
   )
 
   res.setHeader(QUEUE_LENGTH_HEADER, job.queue||0)
-  res.json({ job: jobid })
+  res.json({ job: jobid, queue: job.queue||0 })
 
   console.log('Compiling ', filepath+'…')
 }
