@@ -28,20 +28,33 @@ function execute(job) {
   // TODO: require from project dependency
   const compile = require(CDB_PLATFORMS_DIR).compile
 
+  job.builddir = job.path()+'/.build'
+  fs.ensureDirSync(job.builddir)
+
   // Compile generated Arduino source to target binary
   compile(
     path.join(job.path(), job.target_platform_src), //src
     job.target,
-    job.path() //builddir
+    job.builddir //builddir
   )
     .then(compilation => {
-      // Write generated target binary to file
-      fs.writeFileSync(path.join(job.path(), `src/${job.srcid||"game"}.${job.target}.hex`), compilation.hex)
-      // TODO: no sync writes
+      // Write generated target HEX binary to file
+      if (compilation.hex) {
+        fs.writeFileSync(path.join(job.path(), `${job.srcid||"game"}.${job.target}.hex`), compilation.hex)
+        // TODO: no sync writes
 
-      job.binary = `${HOST_URL_READY}/${job.id}/src/${job.srcid||"game"}.${job.target}.hex` // TODO: .bin for tiny_arcade
+        job.binary = `${HOST_URL_READY}/${job.id}/${job.srcid||"game"}.${job.target}.hex`
+      }
 
-      // Write generated target binary to file
+      // Write generated target BIN binary to file
+      if (compilation.bin) {
+        fs.writeFileSync(path.join(job.path(), `${job.srcid||"game"}.${job.target}.bin`), Buffer.from(compilation.bin))
+        // TODO: no sync writes
+
+        job.binary = `${HOST_URL_READY}/${job.id}/${job.srcid||"game"}.${job.target}.bin`
+      }
+
+      // Write output logs
       let { stdout, stderr } = compilation
       fs.writeFileSync(path.join(job.path(), `compiler-log.json`), JSON.stringify({ stdout, stderr }))
       // TODO: no sync writes
